@@ -109,17 +109,19 @@ def process_frame(frame):
                   center_of_mass[1] + main_vector[1])
     opposite_point = (center_of_mass[0] - main_vector[0],
                       center_of_mass[1] - main_vector[1])
+    # фикс отображения
+    d_fix = 1 if orthogonal_vector[0] > orthogonal_vector[1] else -1
 
     orthogonal_vector = find_orthogonal(main_vector)
     orthogonal_vector_point = (
-        center_of_mass[0] + orthogonal_vector[0], center_of_mass[1] + orthogonal_vector[1])
+        center_of_mass[0] + d_fix * orthogonal_vector[0], center_of_mass[1] + orthogonal_vector[1])
     orthogonal_vector_point_opposite = (
-        center_of_mass[0] - orthogonal_vector[0], center_of_mass[1] - orthogonal_vector[1])
+        center_of_mass[0] - d_fix * orthogonal_vector[0], center_of_mass[1] - orthogonal_vector[1])
 
-    orthogonal_vector_point_2 = (center_of_mass[0] + int(main_vector[0]/3) + orthogonal_vector[0],
+    orthogonal_vector_point_2 = (center_of_mass[0] + int(main_vector[0]/3) + d_fix * orthogonal_vector[0],
                                  center_of_mass[1] - int(main_vector[1]/3) + orthogonal_vector[1])
     orthogonal_vector_point_2_opposite = (center_of_mass[0] + int(
-        main_vector[0]/3) - orthogonal_vector[0], center_of_mass[1] - int(main_vector[1]/3) - orthogonal_vector[1])
+        main_vector[0]/3) - d_fix * orthogonal_vector[0], center_of_mass[1] - int(main_vector[1]/3) - orthogonal_vector[1])
 
     cv.line(contours_dislay_frame, main_point,
             opposite_point, color=red)
