@@ -58,6 +58,7 @@ def process_frame(frame):
     contours = max(contours, key=lambda x: cv.contourArea(x))
     # arc = cv.arcLength(contours, True)
     # contours = cv.approxPolyDP(contours, arc/1000, True)
+
     # И обводим его полигоном
     hull = cv.convexHull(contours)
 
@@ -79,7 +80,7 @@ def process_frame(frame):
         #         (x, y), color=blue)
         nodes.append((x, y))
     node_A = nodes[0]
-    for i in range(1, len(nodes)):
+    for i in range(-1, len(nodes)):
         node_B = nodes[i]
         # Рассмотрим треугольник node_A node_B center_of_mass
         c = distance(node_A, node_B)
