@@ -42,7 +42,7 @@ def distance(start, end):
     return np.sqrt((end[0] - start[0]) ** 2 + (end[1] - start[1]) ** 2)
 
 
-def process_frame(frame):
+def process_frame(frame, points_2d_old, points_2d_int_old):
     contours_dislay_frame = frame.copy()
     # заблюрим для надежности
     # frame = cv.blur(frame, (10, 10))
@@ -157,7 +157,11 @@ def process_frame(frame):
             [int(intersections_2[1][0][0]), int(intersections_2[1][0][1])],
             [int(intersections_2[0][0][0]), int(intersections_2[0][0][1])]
         ])
+    else:
+        points_2d = points_2d_old
+        points_2d_int = points_2d_int_old
 
+    if np.any(points_2d != 1):
         for i in points_2d:
             cv.circle(contours_dislay_frame, (int(i[0]), int(
                 i[1])), color=red, radius=5, thickness=5)
@@ -207,17 +211,19 @@ def process_frame(frame):
     #     cv.circle(contours_dislay_frame, i[0], 5, color=red, thickness=5)
 
     cv.imshow("contours", contours_dislay_frame)
+    return points_2d, points_2d_int
 
 
 def main_loop(filename):
     video = cv.VideoCapture(filename)
+    points_2d_old, points_2d_int_old = 1, 1
     while True:
         _, frame = video.read()
 
         if frame is None:
             break
         frame = cv.resize(frame, (0, 0), fx=0.5, fy=0.5)
-        process_frame(frame)
+        points_2d_old, points_2d_int_old = process_frame(frame, points_2d_old, points_2d_int_old)
 
         key = cv.waitKey()
         if key == 27:
