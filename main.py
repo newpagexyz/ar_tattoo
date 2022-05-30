@@ -118,10 +118,11 @@ def process_frame(frame):
     orthogonal_vector_point_opposite = (
         center_of_mass[0] - d_fix * orthogonal_vector[0], center_of_mass[1] - orthogonal_vector[1])
 
-    orthogonal_vector_point_2 = (center_of_mass[0] + int(main_vector[0]/3) + d_fix * orthogonal_vector[0],
-                                 center_of_mass[1] - int(main_vector[1]/3) + orthogonal_vector[1])
-    orthogonal_vector_point_2_opposite = (center_of_mass[0] + int(
-        main_vector[0]/3) - d_fix * orthogonal_vector[0], center_of_mass[1] - int(main_vector[1]/3) - orthogonal_vector[1])
+    orthogonal_vector_point_2 = (center_of_mass[0] + d_fix * int(main_vector[0] / 3) + d_fix * orthogonal_vector[0],
+                                 center_of_mass[1] - d_fix * int(main_vector[1] / 3) + orthogonal_vector[1])
+    orthogonal_vector_point_2_opposite = (center_of_mass[0] + d_fix * int(
+        main_vector[0] / 3) - d_fix * orthogonal_vector[0],
+                                          center_of_mass[1] - d_fix * int(main_vector[1] / 3) - orthogonal_vector[1])
 
     cv.line(contours_dislay_frame, main_point,
             opposite_point, color=red)
