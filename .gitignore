@@ -1,1 +1,6 @@
 *.mp4
+Makefile
+ar-tattoo
+CMakeCache.txt
+cmake_install.cmake
+CMakeFiles/
