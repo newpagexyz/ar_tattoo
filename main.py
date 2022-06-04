@@ -93,7 +93,7 @@ def captureCamera(camera):
                    font, 1, (255, 0, 0), 3, cv.LINE_AA)
         cv.imshow('Camera', frame)
 
-        key = cv.waitKey(0)
+        key = cv.waitKey(1)
         if key == ord('v'):
             roi = frame[innerRectangleYIni +
                         1:innerRectangleYFin, innerRectangleXIni +
@@ -239,21 +239,29 @@ def process_frame(frame, points_2d_old, points_2d_int_old, lower, upper):
         points_2d = points_2d_old
         points_2d_int = points_2d_int_old
 
-    if len(points_2d_int) != 0:
+    if np.any(points_2d_int != np.int32([[0 ,0], [0 ,0], [0, 0], [0, 0]])):
+
+        # можно впринцепето и убрать
+        for i in points_2d:
+            cv.circle(contours_dislay_frame, (int(i[0]), int(
+                i[1])), color=red, radius=5, thickness=5)
 
         h, w = frame.shape[:2]
 
         M = cv.getPerspectiveTransform(points_3d, points_2d)
-        d_frame = cv.warpPerspective(tattoo, M, (h, w))
+        d_frame = cv.warpPerspective(tattoo, M, (w, h))
 
         blank_black = np.zeros((h, w, 1), dtype=np.uint8)
         mask = cv.fillConvexPoly(blank_black, points_2d_int,
                                  color=255)
         mask_inv = cv.bitwise_not(mask)
-        d_frame = cv.bitwise_and(d_frame, contours_dislay_frame, mask=mask)
+        d_frame = cv.bitwise_and(d_frame, frame, mask=mask)
 
-        vis = cv.bitwise_or(d_frame, contours_dislay_frame, mask=mask_inv)
-        contours_dislay_frame = cv.add(vis, d_frame)
+        vis = cv.bitwise_or(d_frame, frame, mask=mask_inv)
+        # contours_dislay_frame = cv.add(vis, d_frame)
+        d_frame = cv.add(vis, d_frame)
+
+        cv.imshow("d_frame", d_frame)
 
     cv.imshow("contours", contours_dislay_frame)
     return points_2d_int, points_2d
@@ -262,7 +270,7 @@ def process_frame(frame, points_2d_old, points_2d_int_old, lower, upper):
 def main_loop():
     camera = cv.VideoCapture(0)
     points_2d_old = np.float32([0.0, 0.0, 0.0, 0.0])
-    points_2d_int_old = np.int32([0, 0, 0, 0])
+    points_2d_int_old = np.int32([[0 ,0], [0 ,0], [0, 0], [0, 0]])
 
     hSensibility = 100
     sSensibility = 100
@@ -289,7 +297,7 @@ def main_loop():
         points_2d_int_old, points_2d_old = process_frame(
             frame, points_2d_old, points_2d_int_old, lower_bound_color, upper_bound_color)
 
-        key = cv.waitKey()
+        key = cv.waitKey(1)
         if key == 27:
             cv.destroyAllWindows()
             camera.release()
